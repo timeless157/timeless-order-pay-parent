@@ -15,6 +15,7 @@ import com.timeless.service.SeckillProductService;
 import com.timeless.utils.IdGenerateUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,13 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     @Autowired
     private PayFeign payFeign;
 
+    @Value("${alipay.returnUrl}")
+    private String returnUrl;
+
+
+    @Value("${alipay.notifyUrl}")
+    private String notifyUrl;
+
     @Override
     @Transactional
     public OrderInfo doSeckill(Long userId, SeckillProductVo seckillProductVo) {
@@ -53,7 +61,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderInfo.setCreateDate(new Date());
         orderInfo.setOrderNo(String.valueOf(IdGenerateUtil.get().nextId()));
         orderInfo.setSeckillId(seckillProductVo.getId());
-        orderInfo.setStatus(AppHttpCodeEnum.CONTINUE_PAY.getCode());
+        orderInfo.setStatus(AppHttpCodeEnum.CONTINUE_PAY.getMsg());
         orderInfo.setProductPrice(seckillProductVo.getProductPrice());
         save(orderInfo);
         return orderInfo;
@@ -68,6 +76,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         payVo.setTotalAmount(String.valueOf(orderInfo.getSeckillPrice()));
         payVo.setSubject(orderInfo.getProductName());
         payVo.setBody(orderInfo.getProductName());
+        payVo.setReturnUrl(returnUrl);
+        payVo.setNotifyUrl(notifyUrl);
 
         ResponseResult result = payFeign.payOnline(payVo);
         return result;

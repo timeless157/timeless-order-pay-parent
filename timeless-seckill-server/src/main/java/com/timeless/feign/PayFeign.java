@@ -4,9 +4,9 @@ import com.timeless.domain.vo.PayVo;
 import com.timeless.feign.impl.PayFeignImpl;
 import com.timeless.result.ResponseResult;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * @author timeless
@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "timeless-pay-server" , fallback = PayFeignImpl.class)
 public interface PayFeign {
 
-    @PostMapping("/aliPay/payOnline")
+    @RequestMapping("/aliPay/payOnline")
     public ResponseResult payOnline(@RequestBody PayVo payVo);
 
+    @RequestMapping("/aliPay/rsaCheckV1")
+    ResponseResult<Boolean> rsaCheckV1(@RequestParam Map<String, String> params);
 }

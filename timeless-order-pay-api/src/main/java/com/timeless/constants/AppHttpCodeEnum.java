@@ -10,7 +10,9 @@ public enum AppHttpCodeEnum {
 
     SECKILL_PRODUCT_NOT_EXIST(20003, "秒杀商品不存在"),
 
-    CONTINUE_PAY(20004 , "待付款");
+    CONTINUE_PAY(20004, "待付款"),
+    DONE_PAY(20005, "已付款"),
+    RSACHECK_FAIL(20006, "验证签名失败!");
 
 
     public static final Long USERID = 1000L;

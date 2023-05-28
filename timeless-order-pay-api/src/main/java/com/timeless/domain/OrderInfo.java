@@ -37,7 +37,7 @@ public class OrderInfo {
 
     private Double seckillPrice;
 
-    private Integer status;
+    private String status;
 
     private Date createDate;
 

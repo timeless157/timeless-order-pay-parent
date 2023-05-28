@@ -8,10 +8,7 @@ import com.timeless.result.ResponseResult;
 import com.timeless.service.OrderInfoService;
 import com.timeless.service.SeckillProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
@@ -48,6 +45,16 @@ public class OrderInfoController {
         OrderInfo orderInfo = orderInfoService.doSeckill(AppHttpCodeEnum.USERID , seckillProductVo);
 
         return ResponseResult.okResult(orderInfo);
+    }
+
+    @GetMapping("/getAllOrderInfo")
+    public ResponseResult getAllOrderInfo(){
+        return ResponseResult.okResult(orderInfoService.list());
+    }
+
+    @GetMapping("/getOrderInfoByOrderNo/{orderNo}")
+    public ResponseResult getOrderInfoByOrderNo(@PathVariable("orderNo") String orderNo){
+        return ResponseResult.okResult(orderInfoService.getById(orderNo));
     }
 
 }

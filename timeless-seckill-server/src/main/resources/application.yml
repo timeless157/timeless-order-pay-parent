@@ -21,3 +21,7 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # mybatis日志
+
+alipay:
+  returnUrl: http://tm73mp.natappfree.cc/orderPay/returnUrl
+  notifyUrl: http://tm73mp.natappfree.cc/orderPay/notifyUrl
