@@ -17,5 +17,7 @@ public interface OrderInfoService extends IService<OrderInfo> {
     OrderInfo doSeckill(Long userId, SeckillProductVo seckillProductVo);
 
     ResponseResult pay(String orderNo);
+
+    void refund(OrderInfo orderInfo);
 }
 

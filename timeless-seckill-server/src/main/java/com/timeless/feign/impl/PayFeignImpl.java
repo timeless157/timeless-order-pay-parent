@@ -1,6 +1,7 @@
 package com.timeless.feign.impl;
 
 import com.timeless.domain.vo.PayVo;
+import com.timeless.domain.vo.RefundVo;
 import com.timeless.feign.PayFeign;
 import com.timeless.result.ResponseResult;
 
@@ -19,6 +20,11 @@ public class PayFeignImpl implements PayFeign {
 
     @Override
     public ResponseResult<Boolean> rsaCheckV1(Map<String, String> params) {
+        return null;
+    }
+
+    @Override
+    public ResponseResult<Boolean> refund(RefundVo refundVo) {
         return null;
     }
 }

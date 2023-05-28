@@ -8,10 +8,7 @@ import com.timeless.feign.PayFeign;
 import com.timeless.result.ResponseResult;
 import com.timeless.service.OrderInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.Map;
@@ -32,9 +29,28 @@ public class OrderPayController {
     @Autowired
     private PayFeign payFeign;
 
+    /**
+     * 支付
+     * @param orderNo
+     * @return
+     */
     @GetMapping("/pay")
     public Object pay(String orderNo) {
         return orderInfoService.pay(orderNo).getData();
+    }
+
+    /**
+     * 退款
+     * 讲道理，如果按现在的做法，先退款，再修改订单可能会有点问题，因为订单状态可能会延迟改变，这期间用户看到的订单还是已支付。
+     * 但是，用户量小的情况下，接口很快，也没有太大问题，肯定可以优化！
+     * @param orderNo
+     * @return
+     */
+    @RequestMapping("/refund/{orderNo}")
+    public ResponseResult refund(@PathVariable("orderNo") String orderNo){
+        OrderInfo orderInfo = orderInfoService.getById(orderNo);
+        orderInfoService.refund(orderInfo);
+        return ResponseResult.okResult("退款成功!");
     }
 
     /**
@@ -57,7 +73,10 @@ public class OrderPayController {
                 .set("pay_date", new Date())
                 .eq("order_no", params.get("out_trade_no")));
         if (!update) {
-            // 退款操作，因为用户已支付
+            // 联系客服 ，退款操作，因为用户已支付
+            // 或者调用refund接口
+            // 或者把更改订单状态的消息放在mq中，异步处理。
+            // (或者可以说把修改订单状态一起放入RabbitMQ中，见OrderInfoServiceImpl.refund()。后面有案例，这里就不做演示。)
         }
         return "success";
     }

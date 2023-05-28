@@ -2,17 +2,21 @@ package com.timeless.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.timeless.config.RabbitMQConfig;
 import com.timeless.constants.AppHttpCodeEnum;
 import com.timeless.domain.OrderInfo;
 import com.timeless.domain.SeckillProduct;
 import com.timeless.domain.vo.PayVo;
+import com.timeless.domain.vo.RefundVo;
 import com.timeless.domain.vo.SeckillProductVo;
+import com.timeless.exception.SystemException;
 import com.timeless.feign.PayFeign;
 import com.timeless.mapper.OrderInfoMapper;
 import com.timeless.result.ResponseResult;
 import com.timeless.service.OrderInfoService;
 import com.timeless.service.SeckillProductService;
 import com.timeless.utils.IdGenerateUtil;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * (OrderInfo)表服务实现类
@@ -39,6 +44,9 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     @Autowired
     private PayFeign payFeign;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     @Value("${alipay.returnUrl}")
     private String returnUrl;
 
@@ -56,7 +64,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
         //生成订单
         OrderInfo orderInfo = new OrderInfo();
-        BeanUtils.copyProperties(seckillProductVo , orderInfo);
+        BeanUtils.copyProperties(seckillProductVo, orderInfo);
         orderInfo.setUserId(userId);
         orderInfo.setCreateDate(new Date());
         orderInfo.setOrderNo(String.valueOf(IdGenerateUtil.get().nextId()));
@@ -64,6 +72,9 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderInfo.setStatus(AppHttpCodeEnum.CONTINUE_PAY.getMsg());
         orderInfo.setProductPrice(seckillProductVo.getProductPrice());
         save(orderInfo);
+
+        //实现订单超时30min，自动取消，RabbitMQ实现
+        rabbitTemplate.convertAndSend(RabbitMQConfig.TTL_EXCHANGE,"ttl.test",orderInfo);
         return orderInfo;
     }
 
@@ -81,6 +92,31 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
         ResponseResult result = payFeign.payOnline(payVo);
         return result;
+    }
+
+    /**
+     * 哇塞，完美出现，钱扣了，订单状态没改变，因为.set("status", AppHttpCodeEnum.DONE_REFUND.getMsg())忘了.getMsg();
+     *
+     * @param orderInfo
+     */
+    @Override
+    public void refund(OrderInfo orderInfo) {
+        RefundVo refundVo = new RefundVo();
+        refundVo.setOutTradeNo(orderInfo.getOrderNo());
+        refundVo.setRefundAmount(String.valueOf(orderInfo.getSeckillPrice()));
+        refundVo.setRefundReason("没钱了....");
+
+        //RabbitMQ中放入退款消息
+        rabbitTemplate.convertAndSend(RabbitMQConfig.REFUND_QUEUE, refundVo);
+
+
+//        ResponseResult<Boolean> result = payFeign.refund(refundVo);
+//        if (Objects.isNull(result) || !result.getData()) {
+//            throw new SystemException(AppHttpCodeEnum.REFUND_FAIL);
+//        }
+//        orderInfoService.update(new UpdateWrapper<OrderInfo>()
+//                .set("status", AppHttpCodeEnum.DONE_REFUND.getMsg())
+//                .eq("order_no", orderInfo.getOrderNo()));
     }
 }
 

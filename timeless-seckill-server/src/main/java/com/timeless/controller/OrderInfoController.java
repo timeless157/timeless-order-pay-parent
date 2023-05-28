@@ -27,6 +27,11 @@ public class OrderInfoController {
     @Autowired
     private OrderInfoService orderInfoService;
 
+    /**
+     * 秒杀商品
+     * @param seckillId
+     * @return
+     */
     @GetMapping("/doSeckill")
     public ResponseResult doSeckill(@RequestParam("seckillId") Long seckillId) {
 

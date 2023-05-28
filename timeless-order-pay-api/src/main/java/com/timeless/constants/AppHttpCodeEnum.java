@@ -12,7 +12,10 @@ public enum AppHttpCodeEnum {
 
     CONTINUE_PAY(20004, "待付款"),
     DONE_PAY(20005, "已付款"),
-    RSACHECK_FAIL(20006, "验证签名失败!");
+    RSACHECK_FAIL(20006, "验证签名失败!"),
+    REFUND_FAIL(20007, "退款失败!"),
+    DONE_REFUND(20008, "已退款"),
+    ORDER_CANCEL(20009, "已取消");
 
 
     public static final Long USERID = 1000L;

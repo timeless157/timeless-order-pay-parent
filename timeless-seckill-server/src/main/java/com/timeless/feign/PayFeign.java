@@ -1,6 +1,7 @@
 package com.timeless.feign;
 
 import com.timeless.domain.vo.PayVo;
+import com.timeless.domain.vo.RefundVo;
 import com.timeless.feign.impl.PayFeignImpl;
 import com.timeless.result.ResponseResult;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -21,4 +22,7 @@ public interface PayFeign {
 
     @RequestMapping("/aliPay/rsaCheckV1")
     ResponseResult<Boolean> rsaCheckV1(@RequestParam Map<String, String> params);
+
+    @RequestMapping("/aliPay/refund")
+    ResponseResult<Boolean> refund(@RequestBody RefundVo refundVo);
 }
