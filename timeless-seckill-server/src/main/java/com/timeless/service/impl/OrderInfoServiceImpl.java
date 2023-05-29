@@ -15,6 +15,7 @@ import com.timeless.mapper.OrderInfoMapper;
 import com.timeless.result.ResponseResult;
 import com.timeless.service.OrderInfoService;
 import com.timeless.service.SeckillProductService;
+import com.timeless.utils.DateTimeUtils;
 import com.timeless.utils.IdGenerateUtil;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
@@ -73,7 +74,9 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderInfo.setProductPrice(seckillProductVo.getProductPrice());
         save(orderInfo);
 
-        //实现订单超时30min，自动取消，RabbitMQ实现
+        System.out.println("下单成功....." + DateTimeUtils.getCurrentDateTime());
+
+        //实现订单超时1min，自动取消，RabbitMQ实现
         rabbitTemplate.convertAndSend(RabbitMQConfig.TTL_EXCHANGE,"ttl.test",orderInfo);
         return orderInfo;
     }

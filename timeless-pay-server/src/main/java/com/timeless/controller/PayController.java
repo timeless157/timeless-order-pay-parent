@@ -8,8 +8,12 @@ import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.timeless.config.AlipayConfig;
 import com.timeless.config.AlipayProperties;
+import com.timeless.constants.AppHttpCodeEnum;
+import com.timeless.domain.OrderInfo;
 import com.timeless.domain.vo.PayVo;
 import com.timeless.domain.vo.RefundVo;
+import com.timeless.exception.SystemException;
+import com.timeless.feign.OrderInfoFeign;
 import com.timeless.result.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +35,27 @@ public class PayController {
     @Autowired
     private AlipayProperties alipayProperties;
 
+    @Autowired
+    private OrderInfoFeign orderInfoFeign;
+
+    /**
+     *
+     * @param payVo
+     * @return  这个返回的是html界面，这个界面要填写支付宝账号密码。
+     * @throws AlipayApiException
+     */
     @RequestMapping("/payOnline")
     public ResponseResult payOnline(@RequestBody PayVo payVo) throws AlipayApiException {
+
+        // 判断订单状态 , 如果不是待付款，就返回失败
+        ResponseResult<OrderInfo> responseResult = orderInfoFeign.getOrderInfoByOrderNo(payVo.getOutTradeNo());
+        OrderInfo orderInfo = responseResult.getData();
+        String status = orderInfo.getStatus();
+
+        if(!AppHttpCodeEnum.CONTINUE_PAY.getMsg().equals(status)){
+//            return responseResult.error(AppHttpCodeEnum.PAY_FAIL);
+            throw new SystemException(AppHttpCodeEnum.PAY_FAIL);
+        }
 
         // 设置请求参数
         AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();

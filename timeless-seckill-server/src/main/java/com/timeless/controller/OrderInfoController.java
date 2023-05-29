@@ -58,7 +58,7 @@ public class OrderInfoController {
     }
 
     @GetMapping("/getOrderInfoByOrderNo/{orderNo}")
-    public ResponseResult getOrderInfoByOrderNo(@PathVariable("orderNo") String orderNo){
+    public ResponseResult<OrderInfo> getOrderInfoByOrderNo(@PathVariable("orderNo") String orderNo){
         return ResponseResult.okResult(orderInfoService.getById(orderNo));
     }
 

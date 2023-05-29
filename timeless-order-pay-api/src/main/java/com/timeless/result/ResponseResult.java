@@ -75,6 +75,12 @@ public class ResponseResult<T> implements Serializable {
         return this;
     }
 
+    public ResponseResult<?> error(AppHttpCodeEnum appHttpCodeEnum) {
+        this.code = appHttpCodeEnum.getCode();
+        this.msg = appHttpCodeEnum.getMsg();
+        return this;
+    }
+
     public ResponseResult<?> ok(Integer code, T data) {
         this.code = code;
         this.data = data;

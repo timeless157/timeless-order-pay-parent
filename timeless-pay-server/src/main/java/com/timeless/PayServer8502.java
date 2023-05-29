@@ -2,6 +2,7 @@ package com.timeless;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * @author timeless
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @desciption:
  */
 @SpringBootApplication
+@EnableFeignClients
 public class PayServer8502 {
     public static void main(String[] args) {
         SpringApplication.run(PayServer8502.class, args);

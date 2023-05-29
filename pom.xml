@@ -25,7 +25,9 @@
         <spring-cloud-alibaba.version>2.2.5.RELEASE</spring-cloud-alibaba.version>
     </properties>
 
+
     <dependencyManagement>
+
 
         <dependencies>
 
@@ -96,7 +98,10 @@
 
         </dependencies>
 
+
     </dependencyManagement>
+
+
 
 
 
