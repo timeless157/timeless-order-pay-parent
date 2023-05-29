@@ -36,7 +36,12 @@ public class OrderPayController {
      *          也就是说，这个方法完结之后，会让我们填写支付宝的账号密码（或者扫码）
      *          那么，在这段时间内，或许会有别人动这个订单，改变这个订单的状态（比如两个人抢着支付）
      *          但是，好像也不慌，因为同一订单，在支付宝那边有幂等性操作，不会支付两次。
-     *          哎，那这样岂不是不用考虑回调函数中的订单状态了？毕竟
+     *          当下单那一刻，如果订单已经支付过，他会提醒的，回调就不走了。
+     *          哎，那这样岂不是不用考虑回调函数中的订单状态了？
+     *          不是的，订单已支付自然不用考虑了，返回成功就可以。
+     *          但是订单超时取消，要是在付款的时候出现，我们这边现在暂时目前还没有让支付宝能知道这个订单已取消，
+     *          所以会出现：已付款，但是提示用户未成功付款而且订单状态也依然是”已取消“。
+     *          对应策略: 见下异步回调
      */
     @GetMapping("/pay")
     public Object pay(String orderNo) {
@@ -84,9 +89,10 @@ public class OrderPayController {
         OrderInfo orderInfo = orderInfoService.getById(params.get("out_trade_no"));
         if(!AppHttpCodeEnum.CONTINUE_PAY.getMsg().equals(orderInfo.getStatus())){
 //            return "fail";
-
-            // 这里执行通知退款操作 ， 可以用MQ
-
+            // 能走到这里，说明订单状态是：”已取消“，但是用户已经付钱了。所以应对策略是：rnm，退钱！（调用退款接口）
+            // 如果怕退款接口超时，可以用MQ异步退款
+            // 告诉用户订单已经超时，钱一会儿退给您。
+            refund(params.get("out_trade_no"));
             throw new SystemException(AppHttpCodeEnum.PAY_FAIL);
         }
 
@@ -120,6 +126,7 @@ public class OrderPayController {
 
         // 这边其实不需要判断了，因为在我测试的过程中，异步一定比同步快（其他情况不一定）
         // 这样的话，异步那边修改了订单状态，这边一定会抛异常，所以不需要！
+        // 除了签名之外的判断，都在异步回调那边做（但是好像也没啥判断的了）
 
 //        OrderInfo orderInfo = orderInfoService.getById(params.get("out_trade_no"));
 //        if(!AppHttpCodeEnum.CONTINUE_PAY.getMsg().equals(orderInfo.getStatus())){

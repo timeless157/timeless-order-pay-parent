@@ -69,7 +69,6 @@ public class PayController {
                 + "\"subject\":\""+ payVo.getSubject() +"\","
                 + "\"body\":\""+ payVo.getBody() +"\","
                 + "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
-
         String html = alipayClient.pageExecute(alipayRequest).getBody();
         return ResponseResult.okResult(html);
     }

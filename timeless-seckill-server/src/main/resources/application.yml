@@ -23,5 +23,5 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # mybatis日志
 
 alipay:
-  returnUrl: http://znh5z5.natappfree.cc/orderPay/returnUrl
-  notifyUrl: http://znh5z5.natappfree.cc/orderPay/notifyUrl
+  returnUrl: http://rapwwc.natappfree.cc/orderPay/returnUrl
+  notifyUrl: http://rapwwc.natappfree.cc/orderPay/notifyUrl

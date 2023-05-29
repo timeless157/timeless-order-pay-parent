@@ -7,9 +7,9 @@ import com.timeless.constants.AppHttpCodeEnum;
  */
 public class SystemException extends RuntimeException{
 
-    private int code;
+    private final int code;
 
-    private String msg;
+    private final String msg;
 
     public int getCode() {
         return code;

@@ -12,6 +12,7 @@
         <module>timeless-order-pay-api</module>
         <module>timeless-product-server</module>
         <module>timeless-pay-server</module>
+        <module>timeless-seckill-server</module>
     </modules>
 
     <parent>
@@ -38,6 +39,7 @@
             </dependency>
 
             <!-- springCloud -->
+            <!-- type 和 scope 十分重要，一定要加，不然找不到，详情见笔记-->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -100,9 +102,6 @@
 
 
     </dependencyManagement>
-
-
-
 
 
 </project>

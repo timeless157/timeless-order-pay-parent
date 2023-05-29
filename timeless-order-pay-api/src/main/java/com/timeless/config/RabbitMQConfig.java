@@ -11,6 +11,15 @@ import org.springframework.context.annotation.Configuration;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+* @Description： RabbitMQConfig类中的@Bean注解用于将队列、交换机、绑定关系等RabbitMQ相关的组件注册为Spring的bean，
+ *              从而实现这些组件的自动化配置和管理。只有将这些组件注册为bean，才能够在应用程序中使用它们，
+ *              并且能够在RabbitMQ中创建对应的队列、交换机等资源。如果没有将这些组件注册为bean，
+ *              那么在应用程序中是无法使用它们的，也不可能在RabbitMQ中创建对应的队列、交换机等资源。
+ *              因此，将队列、交换机等组件注册为bean是使用RabbitMQ的必要步骤之一。
+* @Date: 2023/5/29 19:54
+* @Author: timeless
+*/
 @Configuration
 public class RabbitMQConfig {
 
@@ -138,7 +147,11 @@ public class RabbitMQConfig {
     }
 
 
-    // 创建Jackson2JsonMessageConverter对象
+    /**
+    * @Description： 以下两个Bean，创建Jackson2JsonMessageConverter对象，使得监听端可以接受任意类型的消息（主要是自定义的类型）
+    * @Date: 2023/5/29 19:57
+    * @Author: timeless
+    */
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
         return new Jackson2JsonMessageConverter();

@@ -18,9 +18,9 @@ public class RefundVo implements Serializable {
     // 交易订单号
     private String outTradeNo;
 
-    //退款金额
+    // 退款金额
     private String refundAmount;
 
-    //退款原因
+    // 退款原因
     private String refundReason;
 }
