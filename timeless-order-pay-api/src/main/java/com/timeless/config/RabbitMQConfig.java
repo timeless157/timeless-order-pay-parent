@@ -81,7 +81,7 @@ public class RabbitMQConfig {
     public Queue ttlQueue() {
         return QueueBuilder.durable(TTL_QUEUE)
                 //该队列过期时间，单位毫秒
-                .ttl(100000)
+                .ttl(60000)
                 //绑定死信交换机
                 .deadLetterExchange(DLX_EXCHANGE)
                 //设置死信交换机routingKey
