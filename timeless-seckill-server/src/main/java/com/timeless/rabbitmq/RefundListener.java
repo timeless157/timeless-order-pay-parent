@@ -45,6 +45,7 @@ public class RefundListener {
             orderInfoService.update(new UpdateWrapper<OrderInfo>()
                     .set("status", AppHttpCodeEnum.DONE_REFUND.getMsg())
                     .eq("order_no", refundVo.getOutTradeNo()));
+            System.out.println("订单已退款......");
         } catch (Exception e) {
             e.printStackTrace();
             // 处理退款失败的情况，例如发送通知邮件或者短信给相关人员

@@ -34,6 +34,7 @@ public class OrderCancelConsumer {
             //取消订单
             orderInfo1.setStatus(AppHttpCodeEnum.ORDER_CANCEL.getMsg());
             orderInfoService.updateById(orderInfo1);
+            System.out.println("订单已取消......");
         }
 
     }

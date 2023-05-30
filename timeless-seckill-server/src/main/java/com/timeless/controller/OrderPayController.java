@@ -99,27 +99,39 @@ public class OrderPayController {
         if(!AppHttpCodeEnum.CONTINUE_PAY.getMsg().equals(orderInfo.getStatus())){
 //            return "fail";
             // 能走到这里，说明订单状态是：”已取消“，但是用户已经付钱了。所以应对策略是：rnm，退钱！（调用退款接口）
+            // 也就是用户刚好付完款了，代码走到这里回调了，却超时了，那肯定会在这提示支付失败，然后退钱。（用户的锅，谁让他卡点支付，刚好超时了。）
             // 如果怕退款接口超时，可以用MQ异步退款
             // 告诉用户订单已经超时，钱一会儿退给您。
             refund(params.get("out_trade_no"));
             throw new SystemException(AppHttpCodeEnum.PAY_FAIL);
         }
 
+        // 手动模拟签名被修改
+        // 结果：确实抛出了订单失败的异常，但是钱已经在支付宝那边扣款了
+        // 结论：在这个回调之前，在点击支付之后，就已经扣款了，进入到这个回调函数一定是扣了款了。
+        // params.put("out_trade_no" , "1111111");
+
+
         //验证签名
         ResponseResult<Boolean> res = payFeign.rsaCheckV1(params);
         if (Objects.isNull(res) || !res.getData()) {
             throw new SystemException(AppHttpCodeEnum.RSACHECK_FAIL);
         }
-        //验证签名成功，修改订单状态为“已付款”
+        // 验证签名成功，修改订单状态为“已付款”
+        // 这里面还需要在sql语句写，订单状态只能从“待付款”到“已付款”(已加上)，不然就不成功，下面处理
+        // 但是走到这里出错的可能性不高，因为前面判断过状态了，走到这里的话，99.99%的可能是“待付款”
+        // 但是为了以防万一，刚好在上面判断成功，到这里的期间订单过期了。但是用户已付款，就需要退钱了。
         boolean update = orderInfoService.update(new UpdateWrapper<OrderInfo>()
                 .set("status", AppHttpCodeEnum.DONE_PAY.getMsg())
                 .set("pay_date", new Date())
-                .eq("order_no", params.get("out_trade_no")));
+                .eq("order_no", params.get("out_trade_no"))
+                .eq("status" , AppHttpCodeEnum.CONTINUE_PAY));
         if (!update) {
             // 联系客服 ，退款操作，因为用户已支付
             // 或者调用refund接口
             // 或者把更改订单状态的消息放在mq中，异步处理。
             // (或者可以说把修改订单状态一起放入RabbitMQ中，见OrderInfoServiceImpl.refund()。后面有案例，这里就不做演示。)
+            orderInfoService.refund(orderInfo);
         }
         return "success";
     }

@@ -19,8 +19,8 @@ public class Knife4jConfiguration {
                 .apiInfo(new ApiInfoBuilder()
                         //.title("swagger-bootstrap-ui-demo RESTful APIs")
                         .description("# 梨花不等故人来")
-                        .termsOfServiceUrl("https://www.blatr.cn/")
-                        .contact("xx@qq.com")
+                        .termsOfServiceUrl("https://www.timeless192194.cn/")
+                        .contact("1051346016@qq.com")
                         .version("1.0")
                         .build())
                 //分组名称
