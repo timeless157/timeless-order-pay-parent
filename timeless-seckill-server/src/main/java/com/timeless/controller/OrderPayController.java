@@ -31,41 +31,43 @@ public class OrderPayController {
 
     /**
      * 支付
+     *
      * @param orderNo
-     * @return  这个支付宝返回的是一串html代码，String类型的，显示在界面上
-     *          也就是说，这个方法完结之后，会让我们填写支付宝的账号密码（或者扫码）
-     *          那么，在这段时间内，或许会有别人动这个订单，改变这个订单的状态（比如两个人抢着支付）
-     *          但是，好像也不慌，因为同一订单，在支付宝那边有幂等性操作，不会支付两次。
-     *          当下单那一刻，如果订单已经支付过，他会提醒的，回调就不走了。
-     *          哎，那这样岂不是不用考虑回调函数中的订单状态了？
-     *          不是的，订单已支付自然不用考虑了，返回成功就可以。
-     *          但是订单超时取消，要是在付款的时候出现，我们这边现在暂时目前还没有让支付宝能知道这个订单已取消，
-     *          所以会出现：已付款，但是提示用户未成功付款而且订单状态也依然是”已取消“。
-     *          对应策略: 见下异步回调
+     * @return 这个支付宝返回的是一串html代码，String类型的，显示在界面上
+     * 也就是说，这个方法完结之后，会让我们填写支付宝的账号密码（或者扫码）
+     * 那么，在这段时间内，或许会有别人动这个订单，改变这个订单的状态（比如两个人抢着支付）
+     * 但是，好像也不慌，因为同一订单，在支付宝那边有幂等性操作，不会支付两次。
+     * 当下单那一刻，如果订单已经支付过，他会提醒的，回调就不走了。
+     * 哎，那这样岂不是不用考虑回调函数中的订单状态了？
+     * 不是的，订单已支付自然不用考虑了，返回成功就可以。
+     * 但是订单超时取消，要是在付款的时候出现，我们这边现在暂时目前还没有让支付宝能知道这个订单已取消，
+     * 所以会出现：已付款，但是提示用户未成功付款而且订单状态也依然是”已取消“。
+     * 对应策略: 见下异步回调
      */
     @GetMapping("/pay")
     public Object pay(String orderNo) {
-        return orderInfoService.pay(orderNo).getData();
+        ResponseResult result = orderInfoService.pay(orderNo);
+        return result.getData();
     }
 
     /**
      * 退款
      * 讲道理，如果按现在的做法，先退款，再修改订单可能会有点问题，因为订单状态可能会延迟改变，这期间用户看到的订单还是已支付。
      * 但是，用户量小的情况下，接口很快，也没有太大问题，肯定可以优化！
-     *
-     *
+     * <p>
+     * <p>
      * 2023/5/29 23：18 测试订单在“待付款”和“已取消”状态为什么调退款的接口会退不了款。
      * 原因：退款接口调用的是支付宝那边的接口，那边会那订单号去看看他那边有没有这个订单的交易成功记录，
-     *         如果有，那么就可以退款。否则，退款失败。事实上，支付宝只知道我们的订单是成功了还是没成功，
-     *         具体的超时、取消他并不知道，至少在我现在的代码中，他不知道，或许有回调可以通知他取消订单。
-     *         所以，我在用“待付款”和“已取消”的订单做测试的会不成功，因为支付宝那边根本没有这条订单的付款记录，不可能退款的。
-     *         支付宝会但会给我们“订单不存在”的信息。
+     * 如果有，那么就可以退款。否则，退款失败。事实上，支付宝只知道我们的订单是成功了还是没成功，
+     * 具体的超时、取消他并不知道，至少在我现在的代码中，他不知道，或许有回调可以通知他取消订单。
+     * 所以，我在用“待付款”和“已取消”的订单做测试的会不成功，因为支付宝那边根本没有这条订单的付款记录，不可能退款的。
+     * 支付宝会但会给我们“订单不存在”的信息。
      *
      * @param orderNo
      * @return
      */
     @RequestMapping("/refund/{orderNo}")
-    public ResponseResult refund(@PathVariable("orderNo") String orderNo){
+    public ResponseResult refund(@PathVariable("orderNo") String orderNo) {
         OrderInfo orderInfo = orderInfoService.getById(orderNo);
         orderInfoService.refund(orderInfo);
         return ResponseResult.okResult("退款成功!");
@@ -96,7 +98,7 @@ public class OrderPayController {
         //                                         所以需要联系客服退款！
 
         OrderInfo orderInfo = orderInfoService.getById(params.get("out_trade_no"));
-        if(!AppHttpCodeEnum.CONTINUE_PAY.getMsg().equals(orderInfo.getStatus())){
+        if (!AppHttpCodeEnum.CONTINUE_PAY.getMsg().equals(orderInfo.getStatus())) {
 //            return "fail";
             // 能走到这里，说明订单状态是：”已取消“，但是用户已经付钱了。所以应对策略是：rnm，退钱！（调用退款接口）
             // 也就是用户刚好付完款了，代码走到这里回调了，却超时了，那肯定会在这提示支付失败，然后退钱。（用户的锅，谁让他卡点支付，刚好超时了。）
@@ -125,7 +127,7 @@ public class OrderPayController {
                 .set("status", AppHttpCodeEnum.DONE_PAY.getMsg())
                 .set("pay_date", new Date())
                 .eq("order_no", params.get("out_trade_no"))
-                .eq("status" , AppHttpCodeEnum.CONTINUE_PAY));
+                .eq("status", AppHttpCodeEnum.CONTINUE_PAY.getMsg()));
         if (!update) {
             // 联系客服 ，退款操作，因为用户已支付
             // 或者调用refund接口

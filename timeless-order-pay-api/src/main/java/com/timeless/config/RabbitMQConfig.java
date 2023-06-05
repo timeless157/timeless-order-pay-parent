@@ -34,7 +34,7 @@ public class RabbitMQConfig {
     /**
      * ttl队列
      */
-    private static final String TTL_QUEUE = "springboot_ttl_queue";
+    public static final String TTL_QUEUE = "springboot_ttl_queue";
     /**
      * 死信交换机
      */
@@ -42,7 +42,7 @@ public class RabbitMQConfig {
     /**
      * 死信队列
      */
-    private static final String DLX_QUEUE = "springboot_dlx_queue";
+    public static final String DLX_QUEUE = "springboot_dlx_queue";
 
     /**
      * 声明ttl交换机
@@ -80,13 +80,13 @@ public class RabbitMQConfig {
     @Bean
     public Queue ttlQueue() {
         return QueueBuilder.durable(TTL_QUEUE)
-                //该队列过期时间，单位毫秒
+                //该队列中的消息过期时间，单位毫秒
                 .ttl(60000)
                 //绑定死信交换机
                 .deadLetterExchange(DLX_EXCHANGE)
                 //设置死信交换机routingKey
                 .deadLetterRoutingKey("dlx.haha")
-                //设置队列最大消息数量为10
+                //设置队列最大消息数量为100
                 .maxLength(100)
                 .build();
     }

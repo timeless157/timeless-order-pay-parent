@@ -25,7 +25,7 @@ public class OrderCancelConsumer {
     private OrderInfoService orderInfoService;
 
 
-    @RabbitListener(queues = "springboot_dlx_queue")
+    @RabbitListener(queues = RabbitMQConfig.DLX_QUEUE)
     public void listener(OrderInfo orderInfo) {
         System.out.println("订单超时取消中...." + DateTimeUtils.getCurrentDateTime());
 

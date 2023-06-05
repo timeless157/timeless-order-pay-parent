@@ -12,21 +12,21 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
-#  rabbitmq:
-#    host: 192.168.111.100
-#    port: 5672
-#    username: admin
-#    password: 123
   rabbitmq:
-    host: localhost
+    host: 192.168.111.100
     port: 5672
-    username: guest
-    password: guest
+    username: admin
+    password: 123
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
 
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # mybatis日志
 
 alipay:
-  returnUrl: http://p3djzg.natappfree.cc/orderPay/returnUrl
-  notifyUrl: http://p3djzg.natappfree.cc/orderPay/notifyUrl
+  returnUrl: http://nh8gz6.natappfree.cc/orderPay/returnUrl
+  notifyUrl: http://nh8gz6.natappfree.cc/orderPay/notifyUrl

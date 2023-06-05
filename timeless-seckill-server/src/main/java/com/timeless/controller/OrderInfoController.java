@@ -60,6 +60,7 @@ public class OrderInfoController {
         }
 
         // 2. 保证库存数量足够
+        // 之后优化，用缓存redis之类的，来应对高并发的场景。
         if (seckillProductVo.getStockCount() <= 0) {
             throw new SystemException(AppHttpCodeEnum.STOCK_NOT_ENOUGH);
         }

@@ -53,8 +53,8 @@ public class PayController {
         String status = orderInfo.getStatus();
 
         if(!AppHttpCodeEnum.CONTINUE_PAY.getMsg().equals(status)){
-//            return responseResult.error(AppHttpCodeEnum.PAY_FAIL);
-            throw new SystemException(AppHttpCodeEnum.PAY_FAIL);
+            return responseResult.okResult(status);
+//            throw new SystemException(AppHttpCodeEnum.PAY_FAIL);
         }
 
         // 设置请求参数
