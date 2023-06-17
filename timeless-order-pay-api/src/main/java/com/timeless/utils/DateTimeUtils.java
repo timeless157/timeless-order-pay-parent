@@ -16,4 +16,11 @@ public class DateTimeUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         return now.format(formatter);
     }
+
+    public static String getCurrentDateTimePlusOneMinute(Long expireTime) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime plusOneMinute = now.plusMinutes(expireTime);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+        return plusOneMinute.format(formatter);
+    }
 }

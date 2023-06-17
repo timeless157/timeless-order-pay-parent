@@ -10,16 +10,17 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
-* @Description： RabbitMQConfig类中的@Bean注解用于将队列、交换机、绑定关系等RabbitMQ相关的组件注册为Spring的bean，
- *              从而实现这些组件的自动化配置和管理。只有将这些组件注册为bean，才能够在应用程序中使用它们，
- *              并且能够在RabbitMQ中创建对应的队列、交换机等资源。如果没有将这些组件注册为bean，
- *              那么在应用程序中是无法使用它们的，也不可能在RabbitMQ中创建对应的队列、交换机等资源。
- *              因此，将队列、交换机等组件注册为bean是使用RabbitMQ的必要步骤之一。
-* @Date: 2023/5/29 19:54
-* @Author: timeless
-*/
+ * @Description： RabbitMQConfig类中的@Bean注解用于将队列、交换机、绑定关系等RabbitMQ相关的组件注册为Spring的bean，
+ * 从而实现这些组件的自动化配置和管理。只有将这些组件注册为bean，才能够在应用程序中使用它们，
+ * 并且能够在RabbitMQ中创建对应的队列、交换机等资源。如果没有将这些组件注册为bean，
+ * 那么在应用程序中是无法使用它们的，也不可能在RabbitMQ中创建对应的队列、交换机等资源。
+ * 因此，将队列、交换机等组件注册为bean是使用RabbitMQ的必要步骤之一。
+ * @Date: 2023/5/29 19:54
+ * @Author: timeless
+ */
 @Configuration
 public class RabbitMQConfig {
 
@@ -43,6 +44,30 @@ public class RabbitMQConfig {
      * 死信队列
      */
     public static final String DLX_QUEUE = "springboot_dlx_queue";
+
+
+    // 基于插件的交换机和队列
+    public static final String PLUGINS_QUEUE = "plugins_queue";
+
+    public static final String PLUGINS_EXCHANGE = "plugins_exchange";
+
+    @Bean
+    public CustomExchange pluginsExchange() {
+        HashMap<String, Object> arguments = new HashMap<>();
+        arguments.put("x-delayed-type", ExchangeTypes.TOPIC);
+        return new CustomExchange(PLUGINS_EXCHANGE, "x-delayed-message", true, false, arguments);
+    }
+
+    @Bean
+    public Queue pluginsQueue() {
+        return QueueBuilder.durable(PLUGINS_QUEUE).build();
+    }
+
+    @Bean
+    public Binding bindingPlugins(@Qualifier("pluginsQueue") Queue queue, @Qualifier("pluginsExchange") CustomExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("plugins.#").noargs();
+    }
+
 
     /**
      * 声明ttl交换机
@@ -77,11 +102,17 @@ public class RabbitMQConfig {
      *
      * @return ttl队列
      */
+
+    /**
+     * @Description: 这边还有一个细节，ttl是设置消息过期时间、expires是设置队列过期时间
+     * @Date: 2023/6/17 21:42
+     * @Author: timeless
+     */
     @Bean
     public Queue ttlQueue() {
         return QueueBuilder.durable(TTL_QUEUE)
                 //该队列中的消息过期时间，单位毫秒
-                .ttl(60000)
+//                .ttl(60000)
                 //绑定死信交换机
                 .deadLetterExchange(DLX_EXCHANGE)
                 //设置死信交换机routingKey
@@ -148,10 +179,10 @@ public class RabbitMQConfig {
 
 
     /**
-    * @Description： 以下两个Bean，创建Jackson2JsonMessageConverter对象，使得监听端可以接受任意类型的消息（主要是自定义的类型）
-    * @Date: 2023/5/29 19:57
-    * @Author: timeless
-    */
+     * @Description： 以下两个Bean，创建Jackson2JsonMessageConverter对象，使得监听端可以接受任意类型的消息（主要是自定义的类型）
+     * @Date: 2023/5/29 19:57
+     * @Author: timeless
+     */
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
         return new Jackson2JsonMessageConverter();

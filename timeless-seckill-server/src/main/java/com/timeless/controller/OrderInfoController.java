@@ -10,6 +10,7 @@ import com.timeless.service.SeckillProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -34,7 +35,7 @@ public class OrderInfoController {
      * @return
      */
     @GetMapping("/doSeckill")
-    public ResponseResult doSeckill(@RequestParam("seckillId") Long seckillId) {
+    public ResponseResult doSeckill(@RequestParam("seckillId") Long seckillId, @RequestParam("expireTime") String expireTime) {
 
         // 0. 得到商品信息
         SeckillProductVo seckillProductVo = seckillProductService.getSeckkillProductVo(seckillId);
@@ -65,7 +66,7 @@ public class OrderInfoController {
             throw new SystemException(AppHttpCodeEnum.STOCK_NOT_ENOUGH);
         }
         // 3. 创建秒杀订单 ， 扣减库存
-        OrderInfo orderInfo = orderInfoService.doSeckill(AppHttpCodeEnum.USERID, seckillProductVo);
+        OrderInfo orderInfo = orderInfoService.doSeckill(AppHttpCodeEnum.USERID, seckillProductVo, expireTime);
 
         return ResponseResult.okResult(orderInfo);
     }
@@ -79,5 +80,21 @@ public class OrderInfoController {
     public ResponseResult<OrderInfo> getOrderInfoByOrderNo(@PathVariable("orderNo") String orderNo) {
         return ResponseResult.okResult(orderInfoService.getById(orderNo));
     }
+
+
+    /**
+     * @Description: 从购物车下单
+     * @Date: 2023/6/17 14:36
+     * @Author: timeless
+     */
+    @PostMapping("/createOrderFromShopCart/{userId}")
+    public ResponseResult<OrderInfo> createOrderFromShopCart(@PathVariable("userId") Long userId,
+                                                             @RequestParam("productId") List<Long> productId,
+                                                             @RequestParam("expireTime") String expireTime) {
+        // TODO 判断商品是否存在于购物车中
+        OrderInfo res = orderInfoService.createOrderFromShopCart(userId, productId , expireTime);
+        return ResponseResult.okResult(res);
+    }
+
 
 }

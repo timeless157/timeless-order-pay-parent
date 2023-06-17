@@ -17,6 +17,8 @@ spring:
     port: 5672
     username: admin
     password: 123
+  profiles:
+    active: dev
 #  rabbitmq:
 #    host: localhost
 #    port: 5672
@@ -28,5 +30,5 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # mybatis日志
 
 alipay:
-  returnUrl: http://nh8gz6.natappfree.cc/orderPay/returnUrl
-  notifyUrl: http://nh8gz6.natappfree.cc/orderPay/notifyUrl
+  returnUrl: http://8bcsm2.natappfree.cc/orderPay/returnUrl
+  notifyUrl: http://8bcsm2.natappfree.cc/orderPay/notifyUrl

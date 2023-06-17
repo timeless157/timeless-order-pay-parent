@@ -1,54 +1,33 @@
 package com.timeless.domain;
-
-import java.util.Date;
-
 import java.io.Serializable;
-
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 /**
- * (OrderInfo)表实体类
+ * (ShopCart)表实体类
  *
  * @author makejava
- * @since 2023-05-28 11:51:49
+ * @since 2023-06-17 14:51:10
  */
 @SuppressWarnings("serial")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("t_order_info")
-@Builder
-public class OrderInfo {
+@TableName("t_shop_cart")
+public class ShopCart  {
+        
     @TableId
-    private String orderNo;
-
+    private Integer id;
+    //购物车id    
+    private String shopCartId;
+    //用户id    
     private Long userId;
-
+    //商品id    
     private Long productId;
-
-    private Long seckillId;
-
-    private String productName;
+    //商品数量    
+    private Integer productCount;
 
     private Double productPrice;
-
-    private Double seckillPrice;
-
-    private String status;
-
-    private Date createDate;
-
-    private Date payDate;
-
-    private Date seckillDate;
-
-    private Double payPrice;
-
-
 }
-

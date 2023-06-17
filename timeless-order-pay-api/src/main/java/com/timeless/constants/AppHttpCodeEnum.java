@@ -14,7 +14,8 @@ public enum AppHttpCodeEnum {
     ORDER_CANCEL(20009, "已取消"),
     PAY_FAIL(20010, "付款失败!"),
 
-    ORDER_TIMEOUT(20011 , "订单超时取消!");
+    ORDER_TIMEOUT(20011, "订单超时取消!"),
+    PRODUCT_NOT_EXIST(20022, "商品不存在");
 
 
     public static final Long USERID = 1000L;

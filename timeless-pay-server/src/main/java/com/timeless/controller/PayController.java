@@ -5,6 +5,7 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
+import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.timeless.config.AlipayConfig;
 import com.timeless.config.AlipayProperties;
@@ -15,6 +16,7 @@ import com.timeless.domain.vo.RefundVo;
 import com.timeless.exception.SystemException;
 import com.timeless.feign.OrderInfoFeign;
 import com.timeless.result.ResponseResult;
+import com.timeless.utils.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,11 +66,17 @@ public class PayController {
         // 异步回调地址
         alipayRequest.setNotifyUrl(payVo.getNotifyUrl());
 
+        // 订单过期时间
+//        String expireTime = DateTimeUtils.getCurrentDateTimePlusOneMinute(1L);
+//        System.out.println(expireTime);
+
         alipayRequest.setBizContent("{\"out_trade_no\":\""+ payVo.getOutTradeNo() +"\","
                 + "\"total_amount\":\""+ payVo.getTotalAmount() +"\","
                 + "\"subject\":\""+ payVo.getSubject() +"\","
                 + "\"body\":\""+ payVo.getBody() +"\","
                 + "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
+//                + "\"timeout_express\":\"1m\"}"); // 设置订单过期时间为1分钟
+//                + "\"time_expire\":\"" + expireTime + "\"}"); // 设置订单过期时间
         String html = alipayClient.pageExecute(alipayRequest).getBody();
         return ResponseResult.okResult(html);
     }

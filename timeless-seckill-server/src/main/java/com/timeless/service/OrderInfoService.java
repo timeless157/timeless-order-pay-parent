@@ -5,6 +5,8 @@ import com.timeless.domain.OrderInfo;
 import com.timeless.domain.vo.SeckillProductVo;
 import com.timeless.result.ResponseResult;
 
+import java.util.List;
+
 
 /**
  * (OrderInfo)表服务接口
@@ -14,10 +16,12 @@ import com.timeless.result.ResponseResult;
  */
 public interface OrderInfoService extends IService<OrderInfo> {
 
-    OrderInfo doSeckill(Long userId, SeckillProductVo seckillProductVo);
+    OrderInfo doSeckill(Long userId, SeckillProductVo seckillProductVo, String expireTime);
 
     ResponseResult pay(String orderNo);
 
     void refund(OrderInfo orderInfo);
+
+    OrderInfo createOrderFromShopCart(Long userId, List<Long> productId, String expireTime);
 }
 
