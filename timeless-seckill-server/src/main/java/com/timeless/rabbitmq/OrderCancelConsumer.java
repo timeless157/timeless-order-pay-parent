@@ -43,6 +43,9 @@ public class OrderCancelConsumer {
         log.error("订单超时取消中...." + DateTimeUtils.getCurrentDateTime() + " === " + orderInfo.getOrderNo());
 
         OrderInfo orderInfo1 = orderInfoService.getById(orderInfo.getOrderNo());
+        if(orderInfo1 == null){
+            return;
+        }
         if(AppHttpCodeEnum.CONTINUE_PAY.getMsg().equals(orderInfo1.getStatus())){
             //取消订单
             orderInfo1.setStatus(AppHttpCodeEnum.ORDER_CANCEL.getMsg());

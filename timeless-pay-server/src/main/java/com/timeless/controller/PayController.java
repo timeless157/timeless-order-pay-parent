@@ -2,6 +2,7 @@ package com.timeless.controller;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
+import com.alipay.api.BatchAlipayRequest;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
@@ -78,6 +79,7 @@ public class PayController {
 //                + "\"timeout_express\":\"1m\"}"); // 设置订单过期时间为1分钟
 //                + "\"time_expire\":\"" + expireTime + "\"}"); // 设置订单过期时间
         String html = alipayClient.pageExecute(alipayRequest).getBody();
+        BatchAlipayRequest batchAlipayRequest = new BatchAlipayRequest();
         return ResponseResult.okResult(html);
     }
 

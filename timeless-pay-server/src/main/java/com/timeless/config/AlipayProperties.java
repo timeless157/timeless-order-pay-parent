@@ -24,5 +24,5 @@ public class AlipayProperties {
     // 字符编码格式
     private String charset;
     // 支付宝网关
-    private String gatewayUrl ;
+    private String gatewayUrl;
 }

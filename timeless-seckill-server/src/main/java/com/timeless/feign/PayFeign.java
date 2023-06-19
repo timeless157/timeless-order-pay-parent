@@ -5,6 +5,7 @@ import com.timeless.domain.vo.RefundVo;
 import com.timeless.feign.impl.PayFeignImpl;
 import com.timeless.result.ResponseResult;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.Map;
  * @desciption:
  */
 @FeignClient(name = "timeless-pay-server" , fallback = PayFeignImpl.class)
+@Component
 public interface PayFeign {
 
     @RequestMapping("/aliPay/payOnline")

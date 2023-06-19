@@ -32,3 +32,7 @@ mybatis-plus:
 alipay:
   returnUrl: http://8bcsm2.natappfree.cc/orderPay/returnUrl
   notifyUrl: http://8bcsm2.natappfree.cc/orderPay/notifyUrl
+
+feign:
+  hystrix:
+    enabled: true
