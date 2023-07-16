@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Created by wolfcode-lanxw
+ * Created by timeless-lanxw
  */
 @Configuration
 public class AlipayConfig {

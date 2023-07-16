@@ -1,0 +1,99 @@
+version: '2.4'
+services:
+  order-nacos:
+    container_name: order-nacos
+    image: nacos/nacos-server:2.0.3
+    build:
+      context: ./nacos
+      dockerfile: dockerfile
+    environment:
+      - MODE=standalone
+    volumes:
+      - ./nacos/logs/:/home/nacos/logs
+      - ./nacos/conf/application.properties:/home/nacos/conf/application.properties
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+      - "9849:9849"
+    depends_on:
+      - order-mysql
+  order-mysql:
+    container_name: order-mysql
+    image: mysql:8.0.26
+    build:
+      context: ./mysql
+      dockerfile: dockerfile
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/conf:/etc/mysql/conf.d
+      - ./mysql/logs:/logs
+      - ./mysql/data:/var/lib/mysql
+    command: [
+      'mysqld',
+      '--innodb-buffer-pool-size=80M',
+      '--character-set-server=utf8mb4',
+      '--collation-server=utf8mb4_unicode_ci',
+      '--default-time-zone=+8:00',
+      '--lower-case-table-names=1'
+    ]
+    environment:
+#      MYSQL_DATABASE: 'order-cloud'
+      MYSQL_ROOT_PASSWORD: 'root'
+  order-redis:
+    container_name: order-redis
+    image: redis:6.0.8
+    build:
+      context: ./redis
+      dockerfile: dockerfile
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/conf/redis.conf:/home/order/redis/redis.conf
+      - ./redis/data:/data
+    command: redis-server /home/order/redis/redis.conf
+  order-product:
+    container_name: order-product
+    build:
+      context: ./timeless-order/product
+      dockerfile: dockerfile
+    ports:
+      - "8500:8500"
+    depends_on:
+      - order-redis
+      - order-mysql
+    links:
+      - order-redis
+      - order-mysql
+  order-seckill:
+    container_name: order-seckill
+    build:
+      context: ./timeless-order/seckill
+      dockerfile: dockerfile
+    ports:
+      - "8501:8501"
+    depends_on:
+      - order-redis
+      - order-mysql
+      - order-product
+    links:
+      - order-redis
+      - order-mysql
+      - order-product
+  order-pay:
+    container_name: order-pay
+    build:
+      context: ./timeless-order/pay
+      dockerfile: dockerfile
+    ports:
+      - "8502:8502"
+    depends_on:
+      - order-redis
+      - order-mysql
+      - order-product
+      - order-seckill
+    links:
+      - order-redis
+      - order-mysql
+      - order-product
+      - order-seckill

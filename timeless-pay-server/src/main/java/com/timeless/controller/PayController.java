@@ -56,7 +56,7 @@ public class PayController {
         String status = orderInfo.getStatus();
 
         if(!AppHttpCodeEnum.CONTINUE_PAY.getMsg().equals(status)){
-            return responseResult.okResult(status);
+            return ResponseResult.okResult(status);
 //            throw new SystemException(AppHttpCodeEnum.PAY_FAIL);
         }
 
@@ -105,6 +105,11 @@ public class PayController {
         //请求
         AlipayTradeRefundResponse res = alipayClient.execute(alipayRequest);
         return ResponseResult.okResult(res.isSuccess());
+    }
+
+    @GetMapping("/testDocker")
+    public ResponseResult testDocker(){
+        return ResponseResult.okResult();
     }
 
 }

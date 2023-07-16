@@ -1,5 +1,9 @@
 package com.timeless.constants;
 
+/**
+ * @author 许
+ */
+
 public enum AppHttpCodeEnum {
     // 成功
     SUCCESS(20000, "操作成功"),
@@ -15,7 +19,8 @@ public enum AppHttpCodeEnum {
     PAY_FAIL(20010, "付款失败!"),
 
     ORDER_TIMEOUT(20011, "订单超时取消!"),
-    PRODUCT_NOT_EXIST(20022, "商品不存在");
+    PRODUCT_NOT_EXIST(20012, "商品不存在"),
+    HAS_BUY(20013, "您已抢购");
 
 
     public static final Long USERID = 1000L;

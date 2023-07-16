@@ -4,19 +4,20 @@ spring:
   application:
     name: timeless-seckill-server
   datasource:
-    url: jdbc:mysql://localhost:3306/timeless_seckill?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://你的虚拟机IP:3306/timeless_seckill?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: 你的虚拟机IP:8848
   rabbitmq:
-    host: 192.168.111.100
+    host: 你的虚拟机IP
     port: 5672
     username: admin
-    password: 123
+    password:
+    virtual-host: /subtlechat
   profiles:
     active: dev
 #  rabbitmq:

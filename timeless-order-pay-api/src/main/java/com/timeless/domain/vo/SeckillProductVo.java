@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
- * Created by wolfcode-lanxw
+ * Created by timeless-lanxw
  * 把Seckillproduct和product的信息整合在一块，然后再前台展示.
  */
 @Data

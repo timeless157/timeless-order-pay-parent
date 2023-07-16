@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * @author timeless
@@ -12,6 +13,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 @SpringBootApplication
 @EnableFeignClients
+@EnableAspectJAutoProxy(exposeProxy = true)
 @MapperScan("com.timeless.mapper")
 public class SeckillServer8501 {
     public static void main(String[] args) {

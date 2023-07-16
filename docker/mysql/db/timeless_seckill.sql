@@ -14,6 +14,13 @@
  Date: 17/06/2023 23:18:03
 */
 
+DROP DATABASE IF EXISTS `timeless_seckill`;
+
+CREATE DATABASE  `timeless_seckill` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+USE `timeless_seckill`;
+
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 

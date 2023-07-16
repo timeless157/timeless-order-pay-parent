@@ -16,12 +16,14 @@ import java.util.List;
  */
 public interface OrderInfoService extends IService<OrderInfo> {
 
-    OrderInfo doSeckill(Long userId, SeckillProductVo seckillProductVo, String expireTime);
+    OrderInfo doSeckill(Long userId, Long seckillId, String expireTime);
 
     ResponseResult pay(String orderNo);
 
     void refund(OrderInfo orderInfo);
 
     OrderInfo createOrderFromShopCart(Long userId, List<Long> productId, String expireTime);
+
+    OrderInfo saveOrder(Long userId, Long seckillId, SeckillProductVo seckillProductVo);
 }
 
