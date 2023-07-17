@@ -14,7 +14,6 @@
  Date: 10/06/2023 21:54:24
 */
 
-
 DROP DATABASE IF EXISTS `timeless_product`;
 
 CREATE DATABASE  `timeless_product` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;

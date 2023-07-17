@@ -20,7 +20,6 @@ CREATE DATABASE  `timeless_seckill` DEFAULT CHARACTER SET utf8 COLLATE utf8_gene
 
 USE `timeless_seckill`;
 
-
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
